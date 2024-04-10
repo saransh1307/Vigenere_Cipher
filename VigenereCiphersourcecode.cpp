@@ -33,13 +33,17 @@ string upper_case(string text){
 
 string vigenere(string text, string key, bool EncDec) {
     string newtext;
+    string newkey = key;
+    while(newkey.length() < text.length()){
+        newkey += key;
+    }
     if (EncDec == 0) {
         for (int i = 0; i < text.length(); i++) {
             if(text[i] == ' '){
                 newtext = newtext + ' ';
             }
             else{
-                newtext += (text[i] + key[i]) % 26 + 65;
+                newtext += (text[i] + newkey[i]) % 26 + 65;
             }
         }
         return newtext;
@@ -50,7 +54,7 @@ string vigenere(string text, string key, bool EncDec) {
                 newtext = newtext + ' ';
             }
             else{
-                int decrypted_char = (text[i] - key[i] + 26) % 26 + 65; 
+                int decrypted_char = (text[i] - newkey[i] + 26) % 26 + 65; 
                 newtext += decrypted_char;
             }
     }
@@ -74,8 +78,20 @@ int main() {
             cout << "Enter the text you would like to encrypt: ";
             getline(cin, plaintext);
             plaintext = upper_case(plaintext);
-            string key = randomkeygenerator(plaintext);
-            // cout<<"Generated key is: "<<key<<endl;
+            char c;
+            cout<<"Would you like to manually enter the encryption key? Press (M/m) or (R/r) to generate a random key:  ";
+            cin>> c;
+            cin.ignore();
+            string key;
+            if(c == 'm' || c == 'M'){
+                cout<<"enter the key: ";
+                getline(cin, key);
+                key = upper_case(key);
+            }
+            else{
+                key = randomkeygenerator(plaintext);
+                // cout<<"Generated key is: "<<key<<endl;
+            }
 
             string newtext_cipher = vigenere(plaintext, key, 0);
             cout << "Your encrypted text is:\n";
@@ -103,6 +119,7 @@ int main() {
             ciphertext = upper_case(ciphertext);
             cout << "Enter the key used for encryption: ";
             getline(cin, key); 
+            key = upper_case(key);
             string returntext = vigenere(ciphertext, key, 1);
             cout << "Your plaintext is: " << returntext << endl;
             cout << "Press (Y/y) to continue or any other key to exit: ";
